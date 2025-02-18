@@ -2,19 +2,11 @@ class MinHeap:
     def __init__(self):
         self.heap = []
 
-    def _parent(self, index):
-        return (index - 1) // 2
-
     def _left_child(self, index):
         return 2 * index + 1
 
     def _right_child(self, index):
         return 2 * index + 2
-
-    def _heapify_up(self, index):
-        while index > 0 and self.heap[self._parent(index)] > self.heap[index]:
-            self.heap[self._parent(index)], self.heap[index] = self.heap[index], self.heap[self._parent(index)]
-            index = self._parent(index)
 
     def _heapify_down(self, index):
         smallest = index
@@ -35,39 +27,36 @@ class MinHeap:
         self.heap.append(value)
         self._heapify_up(len(self.heap) - 1)
 
-    def remove_min(self):
+    def _heapify_up(self, index):
+        while index > 0 and self.heap[(index - 1) // 2] > self.heap[index]:
+            parent = (index - 1) // 2
+            self.heap[parent], self.heap[index] = self.heap[index], self.heap[parent]
+            index = parent
+
+    def pop(self):
         if len(self.heap) == 0:
             raise IndexError("Heap is empty")
-
+        
         min_value = self.heap[0]
         self.heap[0] = self.heap[-1]
         self.heap.pop()
-        self._heapify_down(0)
+        if self.heap:
+            self._heapify_down(0)
         return min_value
-
-    def get_min(self):
-        if len(self.heap) == 0:
-            raise IndexError("Heap is empty")
-        return self.heap[0]
-
-    def size(self):
-        return len(self.heap)
 
     def __str__(self):
         return str(self.heap)
 
+
 # Exemplo:
-
 heap = MinHeap()
-heap.insert(5)
 heap.insert(3)
-heap.insert(8)
 heap.insert(1)
+heap.insert(6)
+heap.insert(5)
+heap.insert(2)
+heap.insert(4)
 
-print("Heap após inserções:", heap)
-
-print("Menor valor removido:", heap.remove_min())
-
-print("Heap após remoção do mínimo:", heap)
-
-print("Menor valor atual:", heap.get_min())
+print("Heap antes da remoção:", heap)
+print("Elemento removido:", heap.pop())
+print("Heap após remoção:", heap)
